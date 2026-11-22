@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+biblioteca.json
+.biblioteca-*.tmp
+arbol_libros.pkl
+categorias.json
