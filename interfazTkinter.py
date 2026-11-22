@@ -178,7 +178,11 @@ class BibliotecaUI:
             id = entry_id.get()
             nombre = entry_nombre.get()
             if id and nombre:
-                self.biblioteca.registrar_usuario(id, nombre)
+                try:
+                    self.biblioteca.registrar_usuario(id, nombre)
+                except ValueError as error:
+                    messagebox.showwarning("Registro de usuario", str(error))
+                    return
                 messagebox.showinfo("Éxito", "Usuario registrado correctamente.")
                 ventana.destroy()
             else:
@@ -250,7 +254,7 @@ class BibliotecaUI:
                 messagebox.showinfo("Éxito", "Libro devuelto correctamente.")
                 ventana.destroy()
             else:
-                messagebox.showerror("Error", "No se pudo devolver el libro.")
+                messagebox.showerror("Error", "Verifique el ISBN y el ID del titular del préstamo.")
 
         tk.Button(ventana, text="Devolver", command=devolver).grid(row=2, column=1, pady=10)
 

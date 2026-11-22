@@ -38,3 +38,14 @@ class PruebasBiblioteca(unittest.TestCase):
             self.b.registrar_libro("Otro título", "Otro autor", " 101 ")
         self.assertEqual(len(self.b.libros), 1)
         self.assertEqual(self.b.buscar_libro("101").titulo, "Luna azul")
+
+    def test_hu04_validar_titular(self):
+        self.b.registrar_usuario("02", "Luis")
+        self.b.prestar_libro("101", "01", "2026-11-21")
+        self.assertFalse(self.b.devolver_libro("101", "02"))
+        self.assertFalse(self.b.buscar_libro("101").disponible)
+        self.assertEqual(self.b.usuarios["01"].libros_prestados, ["101"])
+        with self.assertRaises(ValueError):
+            self.b.registrar_usuario("01", "Luis")
+        self.assertTrue(self.b.devolver_libro("101", "01"))
+        self.assertTrue(self.b.buscar_libro("101").disponible)
