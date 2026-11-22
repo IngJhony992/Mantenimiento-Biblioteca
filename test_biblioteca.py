@@ -32,3 +32,9 @@ class PruebasBiblioteca(unittest.TestCase):
         self.assertEqual([l.isbn for l in self.b.buscar_texto("ríos")], ["101", "102"])
         self.assertEqual([l.isbn for l in self.b.buscar_texto("LUNA")], ["101"])
         self.assertEqual(self.b.buscar_texto("ausente"), [])
+
+    def test_hu03_rechazar_isbn_repetido(self):
+        with self.assertRaises(ValueError):
+            self.b.registrar_libro("Otro título", "Otro autor", " 101 ")
+        self.assertEqual(len(self.b.libros), 1)
+        self.assertEqual(self.b.buscar_libro("101").titulo, "Luna azul")
