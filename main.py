@@ -1,22 +1,30 @@
 import tkinter as tk
-from biblioteca import Biblioteca
-from persistencia import cargar_datos, guardar_datos
+from tkinter import messagebox
+from persistencia import cargar_biblioteca, guardar_datos
 from interfazTkinter import BibliotecaUI
 
-if __name__ == "__main__":
-    # Cargar datos al inicio
-    arbol_libros, arbol_categorias = cargar_datos()
-    biblioteca = Biblioteca()
-    biblioteca.arbol_libros = arbol_libros
-    biblioteca.arbol_categorias = arbol_categorias
 
-    # Iniciar interfaz
+def main():
     root = tk.Tk()
-    app = BibliotecaUI(root, biblioteca)
-    
-    # Guardar al cerrar
-    root.protocol("WM_DELETE_WINDOW", lambda: [
-        guardar_datos(biblioteca),
+    try:
+        biblioteca = cargar_biblioteca()
+    except Exception as error:
+        messagebox.showerror("Carga de datos", str(error))
         root.destroy()
-    ])
+        return
+    BibliotecaUI(root, biblioteca)
+
+    def cerrar():
+        try:
+            guardar_datos(biblioteca)
+        except OSError as error:
+            messagebox.showerror("Error al guardar", str(error))
+            return
+        root.destroy()
+
+    root.protocol("WM_DELETE_WINDOW", cerrar)
     root.mainloop()
+
+
+if __name__ == "__main__":
+    main()
