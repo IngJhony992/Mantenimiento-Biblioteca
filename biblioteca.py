@@ -46,6 +46,11 @@ class Biblioteca:
             return True
         return False
 
+    def prestamos_activos(self):
+        return sorted((isbn, usuario.id, usuario.nombre)
+                      for usuario in self.usuarios.values()
+                      for isbn in usuario.libros_prestados)
+
     def devolver_libro(self, isbn, usuario_id):
         libro = self.buscar_libro(isbn)
         usuario = self.usuarios.get(usuario_id)

@@ -39,6 +39,13 @@ class BibliotecaUI:
 
         tk.Button(frame_principal, text="Gestionar Categorías", command=self.menu_categorias).pack(pady=5)
 
+        tk.Button(frame_principal, text="Préstamos activos", command=self.ver_prestamos).pack(pady=5)
+
+    def ver_prestamos(self):
+        filas = [f"ISBN {isbn} · {nombre} (ID {identificador})"
+                 for isbn, identificador, nombre in self.biblioteca.prestamos_activos()]
+        messagebox.showinfo("Préstamos activos", "\n".join(filas) or "Sin préstamos activos")
+
     def menu_busqueda_avanzada(self):
         """Ventana para búsquedas avanzadas usando árboles."""
         ventana = tk.Toplevel(self.root)
