@@ -32,6 +32,8 @@ class Biblioteca:
         return self.arbol_libros.buscar(isbn) 
 
     def registrar_usuario(self, id, nombre):
+        if id in self.usuarios:
+            raise ValueError("El ID ya pertenece a un usuario registrado.")
         self.usuarios[id] = Usuario(id, nombre)
 
     def prestar_libro(self, isbn, usuario_id, fecha):
@@ -47,7 +49,7 @@ class Biblioteca:
     def devolver_libro(self, isbn, usuario_id):
         libro = self.buscar_libro(isbn)
         usuario = self.usuarios.get(usuario_id)
-        if libro and not libro.disponible and usuario:
+        if libro and not libro.disponible and usuario and isbn in usuario.libros_prestados:
             libro.disponible = True
             usuario.devolver_libro(isbn)
             return True
