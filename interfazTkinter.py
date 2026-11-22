@@ -60,6 +60,16 @@ class BibliotecaUI:
             command=self.buscar_por_categoria
         )
         btn_buscar_categoria.pack(pady=5)
+        tk.Button(ventana, text="Buscar por título o autor", command=self.buscar_texto).pack(pady=5)
+
+    def buscar_texto(self):
+        from tkinter import simpledialog
+        consulta = simpledialog.askstring("Buscar libros", "Parte del título o nombre del autor:", parent=self.root)
+        if consulta is None:
+            return
+        libros = self.biblioteca.buscar_texto(consulta)
+        filas = [f"{l.isbn} · {l.titulo} · {l.autor}" for l in libros]
+        messagebox.showinfo("Resultados", "\n".join(filas) or "Sin coincidencias")
 
     def buscar_por_isbn(self):
         """Búsqueda en el árbol binario por ISBN."""
