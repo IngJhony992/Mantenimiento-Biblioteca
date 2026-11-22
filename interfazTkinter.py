@@ -39,6 +39,13 @@ class BibliotecaUI:
 
         tk.Button(frame_principal, text="Gestionar Categorías", command=self.menu_categorias).pack(pady=5)
 
+        tk.Button(frame_principal, text="Préstamos activos", command=self.ver_prestamos).pack(pady=5)
+
+    def ver_prestamos(self):
+        filas = [f"ISBN {isbn} · {nombre} (ID {identificador})"
+                 for isbn, identificador, nombre in self.biblioteca.prestamos_activos()]
+        messagebox.showinfo("Préstamos activos", "\n".join(filas) or "Sin préstamos activos")
+
     def menu_busqueda_avanzada(self):
         """Ventana para búsquedas avanzadas usando árboles."""
         ventana = tk.Toplevel(self.root)
@@ -60,6 +67,16 @@ class BibliotecaUI:
             command=self.buscar_por_categoria
         )
         btn_buscar_categoria.pack(pady=5)
+        tk.Button(ventana, text="Buscar por título o autor", command=self.buscar_texto).pack(pady=5)
+
+    def buscar_texto(self):
+        from tkinter import simpledialog
+        consulta = simpledialog.askstring("Buscar libros", "Parte del título o nombre del autor:", parent=self.root)
+        if consulta is None:
+            return
+        libros = self.biblioteca.buscar_texto(consulta)
+        filas = [f"{l.isbn} · {l.titulo} · {l.autor}" for l in libros]
+        messagebox.showinfo("Resultados", "\n".join(filas) or "Sin coincidencias")
 
     def buscar_por_isbn(self):
         """Búsqueda en el árbol binario por ISBN."""
@@ -122,7 +139,11 @@ class BibliotecaUI:
             autor = entry_autor.get()
             isbn = entry_isbn.get()
             if titulo and autor and isbn:
-                self.biblioteca.registrar_libro(titulo, autor, isbn)
+                try:
+                    self.biblioteca.registrar_libro(titulo, autor, isbn)
+                except ValueError as error:
+                    messagebox.showwarning("Registro de libro", str(error))
+                    return
                 messagebox.showinfo("Éxito", "Libro registrado correctamente.")
                 ventana.destroy()
             else:
@@ -164,7 +185,11 @@ class BibliotecaUI:
             id = entry_id.get()
             nombre = entry_nombre.get()
             if id and nombre:
-                self.biblioteca.registrar_usuario(id, nombre)
+                try:
+                    self.biblioteca.registrar_usuario(id, nombre)
+                except ValueError as error:
+                    messagebox.showwarning("Registro de usuario", str(error))
+                    return
                 messagebox.showinfo("Éxito", "Usuario registrado correctamente.")
                 ventana.destroy()
             else:
@@ -236,7 +261,7 @@ class BibliotecaUI:
                 messagebox.showinfo("Éxito", "Libro devuelto correctamente.")
                 ventana.destroy()
             else:
-                messagebox.showerror("Error", "No se pudo devolver el libro.")
+                messagebox.showerror("Error", "Verifique el ISBN y el ID del titular del préstamo.")
 
         tk.Button(ventana, text="Devolver", command=devolver).grid(row=2, column=1, pady=10)
 

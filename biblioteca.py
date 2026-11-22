@@ -15,15 +15,25 @@ class Biblioteca:
         self.arbol_categorias = ArbolCategorias() # Nuevo árbol para crear categorías
 
     def registrar_libro(self, titulo, autor, isbn):
+        isbn = isbn.strip()
+        if not isbn or self.buscar_libro(isbn):
+            raise ValueError("Ingrese un ISBN único y no vacío.")
         libro = Libro(titulo, autor, isbn)
         self.libros.append(libro)
         self.libros_recientes.append(libro)  # Simula una pila
         self.arbol_libros.insertar(isbn, libro)  # Insertar en el árbol ABB
 
+    def buscar_texto(self, texto):
+        consulta = texto.strip().casefold()
+        return [libro for libro in self.libros if consulta and
+                (consulta in libro.titulo.casefold() or consulta in libro.autor.casefold())]
+
     def buscar_libro(self, isbn):
         return self.arbol_libros.buscar(isbn) 
 
     def registrar_usuario(self, id, nombre):
+        if id in self.usuarios:
+            raise ValueError("El ID ya pertenece a un usuario registrado.")
         self.usuarios[id] = Usuario(id, nombre)
 
     def prestar_libro(self, isbn, usuario_id, fecha):
@@ -36,10 +46,15 @@ class Biblioteca:
             return True
         return False
 
+    def prestamos_activos(self):
+        return sorted((isbn, usuario.id, usuario.nombre)
+                      for usuario in self.usuarios.values()
+                      for isbn in usuario.libros_prestados)
+
     def devolver_libro(self, isbn, usuario_id):
         libro = self.buscar_libro(isbn)
         usuario = self.usuarios.get(usuario_id)
-        if libro and not libro.disponible and usuario:
+        if libro and not libro.disponible and usuario and isbn in usuario.libros_prestados:
             libro.disponible = True
             usuario.devolver_libro(isbn)
             return True
