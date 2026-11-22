@@ -132,7 +132,11 @@ class BibliotecaUI:
             autor = entry_autor.get()
             isbn = entry_isbn.get()
             if titulo and autor and isbn:
-                self.biblioteca.registrar_libro(titulo, autor, isbn)
+                try:
+                    self.biblioteca.registrar_libro(titulo, autor, isbn)
+                except ValueError as error:
+                    messagebox.showwarning("Registro de libro", str(error))
+                    return
                 messagebox.showinfo("Éxito", "Libro registrado correctamente.")
                 ventana.destroy()
             else:

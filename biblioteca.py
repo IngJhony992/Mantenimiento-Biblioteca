@@ -15,6 +15,9 @@ class Biblioteca:
         self.arbol_categorias = ArbolCategorias() # Nuevo árbol para crear categorías
 
     def registrar_libro(self, titulo, autor, isbn):
+        isbn = isbn.strip()
+        if not isbn or self.buscar_libro(isbn):
+            raise ValueError("Ingrese un ISBN único y no vacío.")
         libro = Libro(titulo, autor, isbn)
         self.libros.append(libro)
         self.libros_recientes.append(libro)  # Simula una pila
