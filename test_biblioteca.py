@@ -49,3 +49,12 @@ class PruebasBiblioteca(unittest.TestCase):
             self.b.registrar_usuario("01", "Luis")
         self.assertTrue(self.b.devolver_libro("101", "01"))
         self.assertTrue(self.b.buscar_libro("101").disponible)
+
+    def test_hu05_prestamos_activos_misma_fecha(self):
+        self.b.registrar_libro("El río", "Elena Ríos", "102")
+        self.b.registrar_usuario("02", "Luis")
+        self.assertTrue(self.b.prestar_libro("101", "01", "2026-11-21"))
+        self.assertTrue(self.b.prestar_libro("102", "02", "2026-11-21"))
+        self.assertEqual(self.b.prestamos_activos(), [("101", "01", "Ana"), ("102", "02", "Luis")])
+        self.b.devolver_libro("101", "01")
+        self.assertEqual(self.b.prestamos_activos(), [("102", "02", "Luis")])

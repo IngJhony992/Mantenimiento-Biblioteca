@@ -148,7 +148,7 @@ class ArbolPrestamos:
 
     def _insertar(self, nodo, fecha, prestamo):
         if nodo is None:
-            return NodoAVL(fecha, prestamo)
+            return NodoPrestamo(fecha, prestamo)
         if fecha < nodo.fecha:
             nodo.izquierda = self._insertar(nodo.izquierda, fecha, prestamo)
         else:
