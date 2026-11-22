@@ -20,6 +20,11 @@ class Biblioteca:
         self.libros_recientes.append(libro)  # Simula una pila
         self.arbol_libros.insertar(isbn, libro)  # Insertar en el árbol ABB
 
+    def buscar_texto(self, texto):
+        consulta = texto.strip().casefold()
+        return [libro for libro in self.libros if consulta and
+                (consulta in libro.titulo.casefold() or consulta in libro.autor.casefold())]
+
     def buscar_libro(self, isbn):
         return self.arbol_libros.buscar(isbn) 
 

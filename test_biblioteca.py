@@ -26,3 +26,9 @@ class PruebasBiblioteca(unittest.TestCase):
         self.assertFalse(copia.buscar_libro("101").disponible)
         self.assertEqual(copia.arbol_categorias.buscar_categoria("Literatura"), ["101"])
         self.assertTrue(copia.devolver_libro("101", "01"))
+
+    def test_hu02_buscar_titulo_y_autor(self):
+        self.b.registrar_libro("El río", "Elena Ríos", "102")
+        self.assertEqual([l.isbn for l in self.b.buscar_texto("ríos")], ["101", "102"])
+        self.assertEqual([l.isbn for l in self.b.buscar_texto("LUNA")], ["101"])
+        self.assertEqual(self.b.buscar_texto("ausente"), [])
